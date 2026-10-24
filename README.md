@@ -22,6 +22,9 @@ The language server provides the following features.
 
 - **Hints for dialect-specific keywords**
   - types of document parts, environments, wobjects
+  - the hint is Markdown: the description from the dialect, followed by the meta-block
+    fields the construct accepts (required ones are marked, with a short help text where
+    the dialect provides one), and a note when the fragile form (`!tikz:`) is needed
 
 ### Code Linting
 
