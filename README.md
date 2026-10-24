@@ -63,4 +63,18 @@ The language server provides the following features.
 
 ### Semantic Highlighting
 
-The server is capable of handling all aspects of highlighting, but currently, it limits this functionality to just meta-blocks. This is due to the efficiency of client-side highlighting using TextMate grammars for the rest. Meta-blocks, which are highly dependent on context, cannot be accurately captured by these grammars.
+The server is capable of handling all aspects of highlighting, but it deliberately limits this
+functionality to constructs that a client-side TextMate grammar cannot recognise. Everything else is
+left to the grammar, which is faster.
+
+- **Meta-blocks**, which are highly dependent on context.
+- **Anonymous (indented) math blocks.** In the FIT math dialect an indented block is an unnumbered
+  equation, but a TextMate rule cannot express "indented deeper than the enclosing block", so the
+  grammar has to treat such a line as ordinary text. The server reports the LaTeX elements of the
+  block with standard token types mirroring the grammar's own math scopes, so both render alike and
+  no client configuration is needed. This requires a dialect that marks the math environments
+  (`equation`, `align`, `gather`) with `math: true`.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
