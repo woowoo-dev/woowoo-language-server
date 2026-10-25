@@ -10,6 +10,9 @@ history only.
 
 ### Added
 
+- `requirements.txt` declares the runtime dependencies of the server (`pygls` 1.3.0,
+  `lsprotocol` 2023.0.1 and `wuff` 1.3.0 or newer). Until now the pins existed only in
+  the VS Code extension, so the repository did not state which pygls it needs.
 - The bundled FIT-Math dialect (`dialects/fit_math.yaml`) marks the `equation`, `align`
   and `gather` outer environments with `math: true`. This lets `wuff` recognise them as
   math environments, so it highlights their bodies and highlights anonymous (indented)
