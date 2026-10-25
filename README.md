@@ -5,7 +5,7 @@ It uses the [pygls](https://github.com/openlawlibrary/pygls) LSP framework and t
 
 ### Requirements
 
-- `Python >=3.8`
+- `Python >=3.10`
 - `wuff` Python package [(available on PyPI)](https://pypi.org/project/wuff/)
 - `pygls` 1.3.0 and `lsprotocol` 2023.0.1 — the versions the VS Code extension bundles
 

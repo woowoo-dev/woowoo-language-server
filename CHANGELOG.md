@@ -48,3 +48,5 @@ history only.
 - Anonymous math highlighting and the meta-block field list in hover hints require `wuff`
   1.3.0 or newer. With an older `wuff` the dialect keys it does not know are ignored and
   the server behaves as before.
+- The server requires Python 3.10 or newer (the README said 3.8), following `wuff` 1.3.0,
+  which dropped 3.8 and 3.9 because both are past end of life.
