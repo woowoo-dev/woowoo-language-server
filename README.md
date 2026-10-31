@@ -1,7 +1,7 @@
 # WooWoo Language Server
 
 The `woowoo-language-server` is an implementation of the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) for the WooWoo language.
-It uses the [pygls](https://github.com/openlawlibrary/pygls) LSP framework and the [wuff](https://github.com/Magmi183/wuff) Python package, written in C++, as backend for analysis.
+It uses the [pygls](https://github.com/openlawlibrary/pygls) LSP framework and the [wuff](https://github.com/woowoo-dev/wuff) Python package, written in C++, as backend for analysis.
 
 ### Requirements
 
