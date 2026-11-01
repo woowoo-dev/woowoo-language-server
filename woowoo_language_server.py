@@ -89,8 +89,7 @@ class WooWooLanguageServer(LanguageServer):
             wuff_version = None
         error = utils.wuff_version_error(wuff_version)
         if error:
-            self.logger.error(error)
-            self.show_message(error, MessageType.Error)
+            self.report_start_error(error)
             return
 
         if len(params.workspace_folders) != 1:
@@ -100,13 +99,28 @@ class WooWooLanguageServer(LanguageServer):
 
         # default: "" --> FIT-Math
         dialect_path = params.initialization_options.get('dialectFilePath', "")
-        self.set_dialect(dialect_path)
+        try:
+            self.set_dialect(dialect_path)
+        except Exception as e:
+            self.report_start_error(f"WooWoo: could not load the dialect {dialect_path}: {e}")
+            return
 
-        self.load_workspace(params.workspace_folders[0])
+        try:
+            self.load_workspace(params.workspace_folders[0])
+        except Exception as e:
+            self.report_start_error(f"WooWoo: could not load the workspace {params.workspace_folders[0].uri}: {e}")
+            return
         self.ready = True
+
+    def report_start_error(self, message: str) -> None:
+        self.logger.error(message)
+        self.show_message(message, MessageType.Error)
 
     def initialize_analyzer(self) -> WooWooAnalyzer:
         analyzer = WooWooAnalyzer()
+        if hasattr(analyzer, "set_completion_text_edits"):  # wuff 1.4.0; an older one is reported in initialize
+            # the completion items' text edits reach the editor (convertors.py)
+            analyzer.set_completion_text_edits(True)
         analyzer.set_token_types(token_types)
         analyzer.set_token_modifiers(token_modifiers)
         return analyzer

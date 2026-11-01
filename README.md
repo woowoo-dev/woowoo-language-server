@@ -21,12 +21,12 @@ python server.py
 
 `tests/smoke_test.py` starts the server over stdio and checks that hover, semantic tokens,
 folding, go to definition and the bibliography features answer without errors, using the
-small project in `tests/workspace`. `tests/test_version_check.py` checks the message for an
-old `wuff`:
+small project in `tests/workspace`. `tests/test_startup.py` checks the messages for an
+old `wuff` and a broken dialect:
 
 ```sh
 python tests/smoke_test.py
-python -m pytest tests/test_version_check.py
+python -m pytest tests/test_startup.py
 ```
 
 The *Test* workflow runs both on every pull request with Python 3.10 to 3.15.

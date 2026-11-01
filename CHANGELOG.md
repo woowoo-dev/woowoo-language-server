@@ -24,7 +24,8 @@ history only.
   cannot be renamed; the editor says so instead of renaming nothing.
 - With a `wuff` older than 1.4.0 the server shows one error, *wuff X is too old; this server
   needs 1.4.0 or newer. Run: pip install -U wuff*, and answers every request with an empty
-  result instead of failing.
+  result instead of failing. A dialect or workspace that cannot be loaded is reported the
+  same way, with the reason (e.g. *Unknown reference target 'bibliograhpy'*).
 - `tests/smoke_test.py` starts the server over stdio and checks the main requests. The
   *Test* workflow runs it on every pull request with Python 3.10 to 3.15.
 - `AGENTS.md` with the rules for working on the server.

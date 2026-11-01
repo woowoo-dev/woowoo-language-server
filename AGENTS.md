@@ -10,7 +10,7 @@ a git submodule (`bundled/tool/woowoo_pygls`) and starts `server.py` from there.
 ```sh
 pip install -r requirements.txt
 python tests/smoke_test.py                     # starts the server and checks the main LSP requests
-python -m pytest tests/test_version_check.py   # the message for a too old wuff (needs pytest)
+python -m pytest tests/test_startup.py          # messages for an old wuff or a broken dialect (needs pytest)
 ```
 
 The *Test* workflow runs both on every PR with Python 3.10 to 3.15. `tests/workspace` is a small
