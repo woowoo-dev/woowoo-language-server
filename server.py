@@ -11,6 +11,7 @@ from lsprotocol.types import (
     TEXT_DOCUMENT_DID_SAVE,
     TEXT_DOCUMENT_FOLDING_RANGE,
     TEXT_DOCUMENT_HOVER,
+    TEXT_DOCUMENT_PREPARE_RENAME,
     TEXT_DOCUMENT_REFERENCES,
     TEXT_DOCUMENT_RENAME,
     TEXT_DOCUMENT_SEMANTIC_TOKENS_FULL,
@@ -30,8 +31,11 @@ from lsprotocol.types import (
     InitializedParams,
     InitializeParams,
     Location,
+    PrepareRenameParams,
+    Range,
     ReferenceParams,
     RenameFilesParams,
+    RenameOptions,
     RenameParams,
     SemanticTokens,
     SemanticTokensLegend,
@@ -47,7 +51,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-SERVER = WooWooLanguageServer("WooWoo Language Server", "v1.2.0")
+SERVER = WooWooLanguageServer("WooWoo Language Server", "v1.3.0")
 
 
 @SERVER.feature(INITIALIZE)
@@ -158,11 +162,19 @@ def references(ls: WooWooLanguageServer, params: ReferenceParams) -> List[Locati
     return ls.references(params)
 
 
-@SERVER.feature(TEXT_DOCUMENT_RENAME)
+# prepare_provider: the editor asks first what can be renamed (a citation key cannot)
+@SERVER.feature(TEXT_DOCUMENT_RENAME, RenameOptions(prepare_provider=True))
 def rename(ls: WooWooLanguageServer, params: RenameParams) -> WorkspaceEdit:
     logger.debug("[TEXT_DOCUMENT_RENAME] SERVER.feature called")
 
     return ls.rename(params)
+
+
+@SERVER.feature(TEXT_DOCUMENT_PREPARE_RENAME)
+def prepare_rename(ls: WooWooLanguageServer, params: PrepareRenameParams) -> Optional[Range]:
+    logger.debug("[TEXT_DOCUMENT_PREPARE_RENAME] SERVER.feature called")
+
+    return ls.prepare_rename(params)
 
 
 @SERVER.feature(TEXT_DOCUMENT_FOLDING_RANGE)

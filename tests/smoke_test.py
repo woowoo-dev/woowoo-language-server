@@ -55,26 +55,36 @@ def receive():
     return json.loads(server.stdout.read(length))
 
 
-def request(method, params):
+diagnostics = {}  # the last published diagnostics by document URI
+
+
+def request(method, params, expect_empty=False):
     request_id = send(method, params)
     while True:
         message = receive()
         if message.get("method") in ("window/showMessage", "window/logMessage"):
             if message["params"]["type"] == 1:  # MessageType.Error
                 fail(f"server error: {message['params']['message']}")
+        elif message.get("method") == "textDocument/publishDiagnostics":
+            diagnostics[message["params"]["uri"]] = message["params"]["diagnostics"]
         elif message.get("id") == request_id:
             if "error" in message:
                 fail(f"{method}: {message['error']}")
-            if not message.get("result"):
-                fail(f"{method}: empty result")
+            if bool(message.get("result")) == expect_empty:
+                fail(f"{method}: {'a' if expect_empty else 'an empty'} result")
             print(f"ok  {method}")
             return message["result"]
 
 
-def position_of(text):
+def position_of(text, offset=1):
     lines = DOCUMENT.read_text().splitlines()
     line = next(i for i, content in enumerate(lines) if text in content)
-    return {"line": line, "character": lines[line].index(text) + 1}
+    return {"line": line, "character": lines[line].index(text) + offset}
+
+
+def check(condition, reason):
+    if not condition:
+        fail(reason)
 
 
 uri = DOCUMENT.as_uri()
@@ -96,6 +106,20 @@ request("textDocument/hover", {**document, "position": position_of(".equation")}
 request("textDocument/semanticTokens/full", document)
 request("textDocument/foldingRange", document)
 request("textDocument/definition", {**document, "position": position_of("ch-smoke has")})
+
+# the bibliography of the Woofile: references.bib
+completion = request("textDocument/completion", {**document, "position": position_of("Smoke_2026", 0),
+                                                 "context": {"triggerKind": 1}})
+check(any(item["label"] == "Smoke_2026" for item in completion["items"]), "no Smoke_2026 in the completion")
+cited = request("textDocument/definition", {**document, "position": position_of("Smoke_2026")})
+check(cited["uri"].endswith("references.bib"), f"definition of the citation: {cited}")
+hover = request("textDocument/hover", {**document, "position": position_of("Smoke_2026")})
+check("Smoke Testing" in hover["contents"]["value"], f"hover of the citation: {hover}")
+request("textDocument/prepareRename", {**document, "position": position_of("ch-smoke has")})
+request("textDocument/prepareRename", {**document, "position": position_of("Smoke_2026")}, expect_empty=True)
+warnings = [d["message"] for d in diagnostics.get(uri, []) if d.get("severity") == 2]
+check(warnings == ["'Smoke_2025' is not in the bibliography (references.bib)"], f"warnings: {warnings}")
+print("ok  bibliography")
 
 send("shutdown", None)
 send("exit", None, notification=True)

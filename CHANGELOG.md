@@ -6,13 +6,34 @@ All notable changes to the WooWoo Language Server are documented here. The forma
 The changelog starts with version 1.2.0; earlier releases are documented in the commit
 history only.
 
-## [Unreleased]
+## [1.3.0] - 2026-11-01
 
 ### Added
 
+- Bibliography support (needs wuff 1.4.0). The bundled FIT-Math dialect (1.3.0) makes
+  `.cite:` a reference to the project's bibliography, the BibTeX file named by
+  `builder.bibtex` in the `Woofile`. Citations complete the keys (with the authors, year and
+  title as the item detail and the entry as its documentation), go to the entry in the
+  `.bib` file, find all citations of a key, show the entry on hover and get a warning when
+  the key is not in the bibliography.
+- Completion inside any reference value, also with Ctrl+Space (`.reference:sec-`); the item
+  replaces the whole value typed so far.
+- Find references and rename from any reference (`.reference:x`, `"…"#x`), not only from
+  the label.
+- `textDocument/prepareRename`: the editor learns what a rename would change. Citation keys
+  cannot be renamed; the editor says so instead of renaming nothing.
+- With a `wuff` older than 1.4.0 the server shows one error, *wuff X is too old; this server
+  needs 1.4.0 or newer. Run: pip install -U wuff*, and answers every request with an empty
+  result instead of failing.
 - `tests/smoke_test.py` starts the server over stdio and checks the main requests. The
   *Test* workflow runs it on every pull request with Python 3.10 to 3.15.
 - `AGENTS.md` with the rules for working on the server.
+
+### Changed
+
+- The bundled dialect: `.eqref:` and the `#` shorthand also reach the labels of `align` and
+  `gather` (they reached `equation` only), as the description of their `label` field says.
+- `requirements.txt` asks for `wuff>=1.4.0`.
 
 ## [1.2.0] - 2026-10-31
 
