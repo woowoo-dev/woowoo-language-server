@@ -9,4 +9,4 @@
 
 pygls==1.3.0
 lsprotocol==2023.0.1
-wuff>=1.3.0
+wuff>=1.4.0

@@ -11,6 +11,8 @@ from lsprotocol.types import (
     FoldingRangeKind,
     InsertTextFormat,
     Location,
+    MarkupContent,
+    MarkupKind,
     Position,
     Range,
     TextDocumentPositionParams,
@@ -36,31 +38,25 @@ from wuff import WorkspaceEdit as WuffWorkspaceEdit
 
 
 def wuff_completion_item_to_ls(wuff_item: WuffCompletionItem) -> CompletionItem:
-    label = wuff_item.label
-    kind = CompletionItemKind.Text
-    if wuff_item.kind:
-        if wuff_item.kind == WuffCompletionItemKind.Snippet:
-            kind = CompletionItemKind.Snippet
-        elif wuff_item.kind == WuffCompletionItemKind.Text:
-            kind = CompletionItemKind.Text
-    else:
-        return CompletionItem(label=label)
-
-    insert_text_format = InsertTextFormat.PlainText
-    if wuff_item.insertTextFormat:
-        if wuff_item.insertTextFormat == WuffInsertTextFormat.Snippet:
-            insert_text_format = InsertTextFormat.Snippet
-        elif wuff_item.insertTextFormat == WuffInsertTextFormat.PlainText:
-            insert_text_format = InsertTextFormat.PlainText
-
-    insert_text = wuff_item.insertText if wuff_item.insertText else ""
-
-    return CompletionItem(
-        label=label,
-        kind=kind,
-        insert_text=insert_text,
-        insert_text_format=insert_text_format,
-    )
+    item = CompletionItem(label=wuff_item.label)
+    if wuff_item.kind is not None:
+        # looked up here, not at import: an old wuff without `Reference` must not stop the server from starting
+        kinds = {
+            WuffCompletionItemKind.Snippet: CompletionItemKind.Snippet,
+            WuffCompletionItemKind.Text: CompletionItemKind.Text,
+            WuffCompletionItemKind.Reference: CompletionItemKind.Reference,
+        }
+        item.kind = kinds.get(wuff_item.kind, CompletionItemKind.Text)
+    if wuff_item.insertTextFormat is not None:
+        item.insert_text_format = (InsertTextFormat.Snippet if wuff_item.insertTextFormat == WuffInsertTextFormat.Snippet
+                                   else InsertTextFormat.PlainText)
+    item.insert_text = wuff_item.insertText
+    item.detail = wuff_item.detail
+    if wuff_item.documentation:
+        item.documentation = MarkupContent(kind=MarkupKind.Markdown, value=wuff_item.documentation)
+    if wuff_item.text_edit is not None:
+        item.text_edit = wuff_text_edit_to_ls(wuff_item.text_edit)
+    return item
 
 
 def wuff_diagnostic_to_ls(wuff_diagnostic: WuffDiagnostic) -> Diagnostic:

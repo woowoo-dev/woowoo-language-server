@@ -24,6 +24,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt pytest
 
       - run: python tests/smoke_test.py
+
+      - run: python -m pytest tests/test_startup.py
