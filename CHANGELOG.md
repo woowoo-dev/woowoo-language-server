@@ -6,7 +6,15 @@ All notable changes to the WooWoo Language Server are documented here. The forma
 The changelog starts with version 1.2.0; earlier releases are documented in the commit
 history only.
 
-## [1.2.0] - 2026-10-24
+## [Unreleased]
+
+### Added
+
+- `tests/smoke_test.py` starts the server over stdio and checks the main requests. The
+  *Test* workflow runs it on every pull request with Python 3.10 to 3.15.
+- `AGENTS.md` with the rules for working on the server.
+
+## [1.2.0] - 2026-10-31
 
 ### Added
 

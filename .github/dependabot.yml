@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # keeps the actions in test.yml current; one grouped PR a month
+  # (no pip updates: pygls and lsprotocol are pinned together with the VS Code extension)
+  - package-ecosystem: 'github-actions'
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ['*']

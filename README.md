@@ -16,6 +16,17 @@ pip install -r requirements.txt
 python server.py
 ```
 
+### Testing
+
+`tests/smoke_test.py` starts the server over stdio and checks that hover, semantic tokens,
+folding and go to definition answer without errors:
+
+```sh
+python tests/smoke_test.py
+```
+
+The *Test* workflow runs it on every pull request with Python 3.10 to 3.15.
+
 
 ## Dialect
 

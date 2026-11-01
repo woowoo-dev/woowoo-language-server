@@ -1,0 +1,12 @@
+.Chapter Smoke test
+  label: ch-smoke
+
+
+The chapter .reference:ch-smoke has an equation.
+
+.equation:
+  label: eq-smoke
+
+  x = 1
+
+    y = 2
